@@ -18,7 +18,28 @@ const int nc = OSC_CAM_MAX_IMAGE_WIDTH/2;
 const int nr = OSC_CAM_MAX_IMAGE_HEIGHT/2;
 
 int TextColor;
+int avgDxy[3][IMG_SIZE];
+//GaussFilter[13] = {1, 4, 11, 27, 50, 72, 82, 72, 50, 27, 11, 4, 1};
+GaussFilter[13] = {1, 4, 8, 32, 64, 64, 128, 64, 64, 32, 8, 4, 1};
+int Border = 6;
+int helpBuf[IMG_SIZE];
+int k = 5;
 
+void LocalMaximum();
+
+int Mc[IMG_SIZE];
+
+int Mc[IMG_SIZE];
+int McLocalMax[IMG_SIZE];
+int absmax;
+
+int c,r = 0;
+
+const int SizeBox = 5;
+const int Oshift = 6;
+
+void AvgDeriv(int Index);
+void CalcDeriv(void);
 
 void ResetProcess()
 {
@@ -39,28 +60,19 @@ void ProcessFrame()
 		//use for initialization; only done in first step
 		memset(data.u8TempImage[THRESHOLD], 0, IMG_SIZE);
 		TextColor = CYAN;
+		data.ipc.state.nThreshold = 15;
 	} else {
+
+
 		//example for time measurement
 		t1 = OscSupCycGet();
 		//example for copying sensor image to background image
 		memcpy(data.u8TempImage[BACKGROUND], data.u8TempImage[SENSORIMG], IMG_SIZE);
-		//example for time measurement
-		t2 = OscSupCycGet();
 
 		//example for log output to console
 		OscLog(INFO, "required = %d us\n", OscSupCycToMicroSecs(t2-t1));
 
-		//example for drawing output
-		//draw line
-		DrawLine(10, 100, 200, 20, RED);
-		//draw open rectangle
-		DrawBoundingBox(20, 10, 50, 40, false, GREEN);
-		//draw filled rectangle
-		DrawBoundingBox(80, 100, 110, 120, true, BLUE);
-		DrawString(200, 200, strlen(Text), TINY, TextColor, Text);
+
 	}
 }
-
-
-
 
